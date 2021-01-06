@@ -173,6 +173,23 @@ namespace RefreshCSTest
                 (uint)Refresh.TextureUsageFlagBits.SamplerBit
             );
 
+            Refresh.TextureSlice setTextureDataSlice;
+            setTextureDataSlice.texture = woodTexture;
+            setTextureDataSlice.rectangle.x = 0;
+            setTextureDataSlice.rectangle.y = 0;
+            setTextureDataSlice.rectangle.w = textureWidth;
+            setTextureDataSlice.rectangle.h = textureHeight;
+            setTextureDataSlice.depth = 0;
+            setTextureDataSlice.layer = 0;
+            setTextureDataSlice.level = 0;
+
+            Refresh.Refresh_SetTextureData(
+                RefreshDevice,
+                ref setTextureDataSlice,
+                pixels,
+                (uint)textureWidth * (uint)textureHeight * 4
+            );
+
             Refresh.Refresh_Image_Free(pixels);
 
             pixels = Refresh.Refresh_Image_Load("noise.png", out textureWidth, out textureHeight, out numChannels);
@@ -183,6 +200,17 @@ namespace RefreshCSTest
                 (uint)textureHeight,
                 1,
                 (uint)Refresh.TextureUsageFlagBits.SamplerBit
+            );
+
+            setTextureDataSlice.texture = noiseTexture;
+            setTextureDataSlice.rectangle.w = textureWidth;
+            setTextureDataSlice.rectangle.h = textureHeight;
+
+            Refresh.Refresh_SetTextureData(
+                RefreshDevice,
+                ref setTextureDataSlice,
+                pixels,
+                (uint)textureWidth * (uint)textureHeight * 4
             );
 
             Refresh.Refresh_Image_Free(pixels);
@@ -211,7 +239,7 @@ namespace RefreshCSTest
             vertexBuffer = Refresh.Refresh_CreateBuffer(
                 RefreshDevice,
                 (uint)Refresh.BufferUsageFlagBits.Vertex,
-                5 * 3
+                4 * 5 * 3
             );
 
             GCHandle handle = GCHandle.Alloc(vertices, GCHandleType.Pinned);
@@ -221,7 +249,7 @@ namespace RefreshCSTest
                 vertexBuffer,
                 0,
                 handle.AddrOfPinnedObject(),
-                5 * 3
+                4 * 5 * 3
             );
 
             handle.Free();
@@ -295,9 +323,7 @@ namespace RefreshCSTest
                 Refresh.DepthFormat.Depth32Stencil8
             );
 
-            IntPtr[] colorTargets = new IntPtr[] { mainColorTarget };
-
-            GCHandle colorTargetHandle = GCHandle.Alloc(colorTargets, GCHandleType.Pinned);
+            GCHandle colorTargetHandle = GCHandle.Alloc(mainColorTarget, GCHandleType.Pinned);
 
             Refresh.FramebufferCreateInfo framebufferCreateInfo;
             framebufferCreateInfo.width = windowWidth;
@@ -332,16 +358,19 @@ namespace RefreshCSTest
 
             GCHandle colorTargetBlendStateHandle = GCHandle.Alloc(colorTargetBlendStates, GCHandleType.Pinned);
 
-            float[] blendConstants = new float[] { 0, 0, 0, 0 };
-
-            GCHandle blendConstantsHandle = GCHandle.Alloc(blendConstants, GCHandleType.Pinned);
-
             Refresh.ColorBlendState colorBlendState;
-            colorBlendState.logicOpEnable = 0;
-            colorBlendState.logicOp = Refresh.LogicOp.NoOp;
-            colorBlendState.blendConstants = blendConstantsHandle.AddrOfPinnedObject();
-            colorBlendState.blendStateCount = 1;
-            colorBlendState.blendStates = colorTargetBlendStateHandle.AddrOfPinnedObject();
+
+            unsafe
+            {
+                colorBlendState.logicOpEnable = 0;
+                colorBlendState.logicOp = Refresh.LogicOp.NoOp;
+                colorBlendState.blendConstants[0] = 0;
+                colorBlendState.blendConstants[1] = 0;
+                colorBlendState.blendConstants[2] = 0;
+                colorBlendState.blendConstants[3] = 0;
+                colorBlendState.blendStateCount = 1;
+                colorBlendState.blendStates = colorTargetBlendStateHandle.AddrOfPinnedObject();
+            }
 
             Refresh.DepthStencilState depthStencilState;
             depthStencilState.depthTestEnable = 0;
@@ -378,7 +407,7 @@ namespace RefreshCSTest
 
             Refresh.MultisampleState multisampleState;
             multisampleState.multisampleCount = Refresh.SampleCount.One;
-            multisampleState.sampleMask = 0;
+            multisampleState.sampleMask = uint.MaxValue;
 
             Refresh.GraphicsPipelineLayoutCreateInfo pipelineLayoutCreateInfo;
             pipelineLayoutCreateInfo.vertexSamplerBindingCount = 0;
@@ -401,7 +430,7 @@ namespace RefreshCSTest
             Refresh.VertexBinding[] vertexBindings = new Refresh.VertexBinding[1];
             vertexBindings[0].binding = 0;
             vertexBindings[0].inputRate = Refresh.VertexInputRate.Vertex;
-            vertexBindings[0].stride = 5;
+            vertexBindings[0].stride = 4 * 5;
 
             Refresh.VertexAttribute[] vertexAttributes = new Refresh.VertexAttribute[2];
             vertexAttributes[0].binding = 0;
@@ -412,7 +441,7 @@ namespace RefreshCSTest
             vertexAttributes[1].binding = 0;
             vertexAttributes[1].location = 1;
             vertexAttributes[1].format = Refresh.VertexElementFormat.Vector2;
-            vertexAttributes[1].offset = 3;
+            vertexAttributes[1].offset = 4 * 3;
 
             GCHandle vertexBindingsHandle = GCHandle.Alloc(vertexBindings, GCHandleType.Pinned);
             GCHandle vertexAttributesHandle = GCHandle.Alloc(vertexAttributes, GCHandleType.Pinned);
@@ -440,6 +469,11 @@ namespace RefreshCSTest
             viewportState.scissors = scissorHandle.AddrOfPinnedObject();
             viewportState.scissorCount = 1;
 
+            unsafe
+            {
+                System.Console.WriteLine(sizeof(Refresh.GraphicsPipelineLayoutCreateInfo));
+            }
+
             Refresh.GraphicsPipelineCreateInfo graphicsPipelineCreateInfo;
             graphicsPipelineCreateInfo.colorBlendState = colorBlendState;
             graphicsPipelineCreateInfo.depthStencilState = depthStencilState;
@@ -459,7 +493,6 @@ namespace RefreshCSTest
 
             System.Console.WriteLine("created graphics pipeline");
 
-            blendConstantsHandle.Free();
             colorTargetBlendStateHandle.Free();
             vertexBindingsHandle.Free();
             vertexAttributesHandle.Free();
@@ -586,24 +619,33 @@ namespace RefreshCSTest
                 }
             }
 
-            IntPtr[] vertexBuffers = new IntPtr[1];
-            vertexBuffers[0] = vertexBuffer;
+            GCHandle vertexBufferHandle = GCHandle.Alloc(vertexBuffer, GCHandleType.Pinned);
+            GCHandle offsetHandle = GCHandle.Alloc(offsets, GCHandleType.Pinned);
 
             Refresh.Refresh_BindVertexBuffers(
                 RefreshDevice,
                 commandBuffer,
                 0,
                 1,
-                vertexBuffers,
-                offsets
+                vertexBufferHandle.AddrOfPinnedObject(),
+                offsetHandle.AddrOfPinnedObject()
             );
+
+            vertexBufferHandle.Free();
+            offsetHandle.Free();
+
+            GCHandle sampleTextureHandle = GCHandle.Alloc(sampleTextures, GCHandleType.Pinned);
+            GCHandle sampleSamplerHandle = GCHandle.Alloc(sampleSamplers, GCHandleType.Pinned);
 
             Refresh.Refresh_BindFragmentSamplers(
                 RefreshDevice,
                 commandBuffer,
-                sampleTextures,
-                sampleSamplers
+                sampleTextureHandle.AddrOfPinnedObject(),
+                sampleSamplerHandle.AddrOfPinnedObject()
             );
+
+            sampleTextureHandle.Free();
+            sampleSamplerHandle.Free();
 
             Refresh.Refresh_DrawPrimitives(
                 RefreshDevice,
@@ -614,6 +656,11 @@ namespace RefreshCSTest
                 fragmentParamOffset
             );
 
+            Refresh.Refresh_EndRenderPass(
+                RefreshDevice,
+                commandBuffer
+            );
+
             Refresh.Refresh_QueuePresent(
                 RefreshDevice,
                 commandBuffer,
@@ -622,14 +669,15 @@ namespace RefreshCSTest
                 Refresh.Filter.Nearest
             );
 
-            IntPtr[] commandBuffers = new IntPtr[1];
-            commandBuffers[0] = commandBuffer;
+            GCHandle commandBufferHandle = GCHandle.Alloc(commandBuffer, GCHandleType.Pinned);
 
             Refresh.Refresh_Submit(
                 RefreshDevice,
                 1,
-                commandBuffers
+                commandBufferHandle.AddrOfPinnedObject()
             );
+
+            commandBufferHandle.Free();
         }
 
         public void Dispose()

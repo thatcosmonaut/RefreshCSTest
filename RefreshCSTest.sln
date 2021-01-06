@@ -1,0 +1,34 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.26124.0
+MinimumVisualStudioVersion = 15.0.26124.0
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RefreshCSTest", "RefreshCSTest.csproj", "{D9EBF8FA-A102-490B-9250-9740E5A29824}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SDL2-CS", "SDL2-CS\SDL2-CS.csproj", "{85480198-8711-4355-830E-72FD794AD3F6}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RefreshCS", "RefreshCS\RefreshCS.csproj", "{0F10867A-7CFE-451A-9CA6-1E50636180E5}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|x64 = Debug|x64
+		Release|x64 = Release|x64
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{D9EBF8FA-A102-490B-9250-9740E5A29824}.Debug|x64.ActiveCfg = Debug|x64
+		{D9EBF8FA-A102-490B-9250-9740E5A29824}.Debug|x64.Build.0 = Debug|x64
+		{D9EBF8FA-A102-490B-9250-9740E5A29824}.Release|x64.ActiveCfg = Release|x64
+		{D9EBF8FA-A102-490B-9250-9740E5A29824}.Release|x64.Build.0 = Release|x64
+		{85480198-8711-4355-830E-72FD794AD3F6}.Debug|x64.ActiveCfg = Debug|x64
+		{85480198-8711-4355-830E-72FD794AD3F6}.Debug|x64.Build.0 = Debug|x64
+		{85480198-8711-4355-830E-72FD794AD3F6}.Release|x64.ActiveCfg = Debug|x64
+		{85480198-8711-4355-830E-72FD794AD3F6}.Release|x64.Build.0 = Debug|x64
+		{0F10867A-7CFE-451A-9CA6-1E50636180E5}.Debug|x64.ActiveCfg = Debug|x64
+		{0F10867A-7CFE-451A-9CA6-1E50636180E5}.Debug|x64.Build.0 = Debug|x64
+		{0F10867A-7CFE-451A-9CA6-1E50636180E5}.Release|x64.ActiveCfg = Release|x64
+		{0F10867A-7CFE-451A-9CA6-1E50636180E5}.Release|x64.Build.0 = Release|x64
+	EndGlobalSection
+EndGlobal

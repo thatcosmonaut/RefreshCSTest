@@ -1,0 +1,19 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net461</TargetFramework>
+        <OutputType>Exe</OutputType>
+        <RootNamespace>RefreshCSTest</RootNamespace>
+        <Platform>x64</Platform>
+        <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    </PropertyGroup>
+
+    <PropertyGroup>
+        <DefaultItemExcludes>$(DefaultItemExcludes);SDL2-CS\**\*;RefreshCS\**\*</DefaultItemExcludes>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <ProjectReference Include=".\SDL2-CS\SDL2-CS.csproj" />
+        <ProjectReference Include=".\RefreshCS\RefreshCS.csproj" />
+    </ItemGroup>
+</Project>

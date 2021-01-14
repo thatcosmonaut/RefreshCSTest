@@ -424,9 +424,6 @@ namespace RefreshCSTest
             rasterizerState.frontFace = Refresh.FrontFace.Clockwise;
             rasterizerState.lineWidth = 1.0f;
 
-            Refresh.TopologyState topologyState;
-            topologyState.topology = Refresh.PrimitiveType.TriangleList;
-
             Refresh.VertexBinding[] vertexBindings = new Refresh.VertexBinding[1];
             vertexBindings[0].binding = 0;
             vertexBindings[0].inputRate = Refresh.VertexInputRate.Vertex;
@@ -482,7 +479,7 @@ namespace RefreshCSTest
             graphicsPipelineCreateInfo.multisampleState = multisampleState;
             graphicsPipelineCreateInfo.pipelineLayoutCreateInfo = pipelineLayoutCreateInfo;
             graphicsPipelineCreateInfo.rasterizerState = rasterizerState;
-            graphicsPipelineCreateInfo.topologyState = topologyState;
+            graphicsPipelineCreateInfo.primitiveType = Refresh.PrimitiveType.TriangleList;
             graphicsPipelineCreateInfo.vertexInputState = vertexInputState;
             graphicsPipelineCreateInfo.viewportState = viewportState;
             graphicsPipelineCreateInfo.renderPass = mainRenderPass;

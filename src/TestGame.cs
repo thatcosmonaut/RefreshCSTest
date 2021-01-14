@@ -337,8 +337,6 @@ namespace RefreshCSTest
 
             colorTargetHandle.Free();
 
-            System.Console.WriteLine("created framebuffer");
-
             /* pipeline */
 
             Refresh.ColorTargetBlendState[] colorTargetBlendStates = new Refresh.ColorTargetBlendState[1];
@@ -466,16 +464,11 @@ namespace RefreshCSTest
             viewportState.scissors = scissorHandle.AddrOfPinnedObject();
             viewportState.scissorCount = 1;
 
-            unsafe
-            {
-                System.Console.WriteLine(sizeof(Refresh.GraphicsPipelineLayoutCreateInfo));
-            }
-
             Refresh.GraphicsPipelineCreateInfo graphicsPipelineCreateInfo;
             graphicsPipelineCreateInfo.colorBlendState = colorBlendState;
             graphicsPipelineCreateInfo.depthStencilState = depthStencilState;
             graphicsPipelineCreateInfo.vertexShaderState = vertexShaderState;
-            graphicsPipelineCreateInfo.fragmentShaderStage = fragmentShaderStage;
+            graphicsPipelineCreateInfo.fragmentShaderState = fragmentShaderStage;
             graphicsPipelineCreateInfo.multisampleState = multisampleState;
             graphicsPipelineCreateInfo.pipelineLayoutCreateInfo = pipelineLayoutCreateInfo;
             graphicsPipelineCreateInfo.rasterizerState = rasterizerState;

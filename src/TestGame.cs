@@ -164,13 +164,20 @@ namespace RefreshCSTest
             /* load textures */
 
             IntPtr pixels = Refresh.Refresh_Image_Load("woodgrain.png", out var textureWidth, out var textureHeight, out var numChannels);
-            woodTexture = Refresh.Refresh_CreateTexture2D(
+
+            Refresh.TextureCreateInfo textureCreateInfo;
+            textureCreateInfo.width = (uint) textureWidth;
+            textureCreateInfo.height = (uint) textureHeight;
+            textureCreateInfo.depth = 1;
+            textureCreateInfo.format = Refresh.ColorFormat.R8G8B8A8;
+            textureCreateInfo.levelCount = 1;
+            textureCreateInfo.sampleCount = Refresh.SampleCount.One;
+            textureCreateInfo.isCube = 0;
+            textureCreateInfo.usageFlags = (uint) Refresh.TextureUsageFlagBits.SamplerBit;
+
+            woodTexture = Refresh.Refresh_CreateTexture(
                 RefreshDevice,
-                Refresh.ColorFormat.R8G8B8A8,
-                (uint)textureWidth,
-                (uint)textureHeight,
-                1,
-                (uint)Refresh.TextureUsageFlagBits.SamplerBit
+                ref textureCreateInfo
             );
 
             Refresh.TextureSlice setTextureDataSlice;
@@ -193,13 +200,13 @@ namespace RefreshCSTest
             Refresh.Refresh_Image_Free(pixels);
 
             pixels = Refresh.Refresh_Image_Load("noise.png", out textureWidth, out textureHeight, out numChannels);
-            noiseTexture = Refresh.Refresh_CreateTexture2D(
+
+            textureCreateInfo.width = (uint)textureWidth;
+            textureCreateInfo.height = (uint)textureHeight;
+
+            noiseTexture = Refresh.Refresh_CreateTexture(
                 RefreshDevice,
-                Refresh.ColorFormat.R8G8B8A8,
-                (uint)textureWidth,
-                (uint)textureHeight,
-                1,
-                (uint)Refresh.TextureUsageFlagBits.SamplerBit
+                ref textureCreateInfo
             );
 
             setTextureDataSlice.texture = noiseTexture;
@@ -292,13 +299,13 @@ namespace RefreshCSTest
             colorTargetDescriptionHandle.Free();
             depthStencilTargetDescriptionHandle.Free();
 
-            mainColorTargetTexture = Refresh.Refresh_CreateTexture2D(
+            textureCreateInfo.width = windowWidth;
+            textureCreateInfo.height = windowHeight;
+            textureCreateInfo.usageFlags = (uint) Refresh.TextureUsageFlagBits.ColorTargetBit;
+
+            mainColorTargetTexture = Refresh.Refresh_CreateTexture(
                 RefreshDevice,
-                Refresh.ColorFormat.R8G8B8A8,
-                windowWidth,
-                windowHeight,
-                1,
-                (uint)Refresh.TextureUsageFlagBits.ColorTargetBit
+                ref textureCreateInfo
             );
 
             mainColorTargetTextureSlice.texture = mainColorTargetTexture;
